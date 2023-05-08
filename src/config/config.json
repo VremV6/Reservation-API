@@ -2,5 +2,9 @@
   "mongodb": {
     "uri": "mongodb://localhost",
     "dbName": "Reservation"
+  },
+  "jwt": {
+    "secret": "sEcReToSiImAtTii",
+    "expiresIn": "1d"
   }
 }

@@ -3,6 +3,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Reservation } from './interfaces/reservation.interface';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { Constants } from '../../common/constants';
+import { CustomException } from '../../common/exceptions/custom-exception';
 
 @Injectable()
 export class ReservationService {
@@ -15,6 +16,9 @@ export class ReservationService {
     createReservationDto: CreateReservationDto,
   ): Promise<Reservation> {
     const createdReservation = new this.reservationModel(createReservationDto);
+    if (!createdReservation.name) {
+      throw new CustomException('Rezervarea nu a putut fi facuta!', 400);
+    }
     return createdReservation.save();
   }
 

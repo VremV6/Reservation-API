@@ -3,9 +3,9 @@ import { ReservationsController } from './reservation.controller';
 import { ReservationService } from './reservation.service';
 import { reservationProviders } from './reservation.providers';
 import { DatabaseModule } from '../database/database.module';
-
+import { PassportModule } from '@nestjs/passport';
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, PassportModule],
   controllers: [ReservationsController],
   providers: [ReservationService, ...reservationProviders],
 })
