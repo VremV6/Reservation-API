@@ -1,7 +1,8 @@
 {
   "mongodb": {
     "uri": "mongodb://localhost",
-    "dbName": "Reservation"
+    "dbName": "Reservation",
+    "port": 27017
   },
   "jwt": {
     "secret": "sEcReToSiImAtTii",

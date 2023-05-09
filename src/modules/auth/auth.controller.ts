@@ -9,29 +9,34 @@ import {
   Request,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthGuard } from '@nestjs/passport';
+import { AuthDto } from './dto/auth.dto';
+import { User } from '../user/user.service';
+import { Logger } from '@nestjs/common';
+import { UserDto } from '../user/dto/user.dto';
 
 @Controller('auth')
 export class AuthController {
+  private logger = new Logger(AuthController.name);
+
   constructor(private readonly authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() signInDto: Record<string, any>) {
-    console.log('ajunge aici');
-    return this.authService.signIn(signInDto.username, signInDto.password);
+  signIn(@Body() signInDto: AuthDto): Promise<User> {
+    this.logger.log(`Received login request for username: ${signInDto.name}`);
+    return this.authService.signIn(signInDto);
   }
 
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
   }
-  // @Post('login')
-  // async login(@Body() loginDto: AuthDto) {
-  //   const { username, password } = loginDto;
-  //   // Validate user credentials here
-  //   const userId = 'your_user_id';
-  //   const token = await this.authService.createToken(userId, username);
-  //   return { token };
-  // }
+
+  @Post('register')
+  async register(@Body() userDto: UserDto): Promise<User> {
+    this.logger.verbose(
+      `Received registration request for username: ${userDto.name}`,
+    );
+    return this.authService.register(userDto);
+  }
 }

@@ -1,24 +1,45 @@
-import { Injectable } from '@nestjs/common';
-
+import { Injectable, Inject } from '@nestjs/common';
+import { Model } from 'mongoose';
+import { UserDto } from './dto/user.dto';
+import { Constants } from '../../common/constants';
+import * as bcrypt from 'bcrypt';
+import { CustomException } from '../../common/exceptions/custom-exception';
 // This should be a real class/interface representing a user entity
 export type User = any;
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
-    },
-    {
-      userId: 2,
-      username: 'tutu',
-      password: '123456',
-    },
-  ];
+  constructor(
+    @Inject(Constants.USER_MODEL)
+    private userModel: Model<User>,
+  ) {}
+  async createUser(userDto: UserDto): Promise<User> {
+    const { name, password, email, role } = userDto;
+    // Hash the password using bcrypt
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  async findOne(username: string): Promise<User | undefined> {
-    return this.users.find((user) => user.username === username);
+    // Create a new user object
+    const newUser = new this.userModel({
+      name,
+      email,
+      password: hashedPassword,
+      role,
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+
+    // Save the new user to the database
+    await newUser.save();
+
+    // Return the created user
+    return newUser;
+  }
+
+  async findOneByName(name: string): Promise<User | undefined> {
+    const user = await this.userModel.findOne({ name }).exec();
+    if (!user) {
+      throw new CustomException('Utilizatorul nu exista!', 401);
+    }
+    return user;
   }
 }
