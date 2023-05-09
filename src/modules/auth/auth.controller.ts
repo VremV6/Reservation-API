@@ -23,7 +23,9 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   signIn(@Body() signInDto: AuthDto): Promise<User> {
-    this.logger.log(`Received login request for username: ${signInDto.name}`);
+    this.logger.verbose(
+      `Received login request for username: ${signInDto.name}`,
+    );
     return this.authService.signIn(signInDto);
   }
 
