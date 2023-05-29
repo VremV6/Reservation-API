@@ -7,7 +7,6 @@ import {
   Get,
   Param,
   Post,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { CreateReservationDto } from './dto/create-reservation.dto';
@@ -79,7 +78,7 @@ export class ReservationsController {
       const reservation = await this.reservationsService.findById(id, userId);
       const companyId = reservation.get('companyId');
       if (userId !== companyId.toString()) {
-        throw new UnauthorizedException();
+        return;
       }
       return reservation;
     } catch (error) {

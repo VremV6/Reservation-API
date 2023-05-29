@@ -35,8 +35,6 @@ export class UsersService {
   }
 
   async findOneByName(name: string): Promise<User | undefined> {
-    const user = await this.userModel.findOne({ name }).exec();
-
-    return user;
+    return await this.userModel.findOne({ name }).exec();
   }
 }
