@@ -1,9 +1,8 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { UserDto } from './dto/user.dto';
 import { Constants } from '../../common/constants';
 import * as bcrypt from 'bcrypt';
-import { CustomException } from '../../common/exceptions/custom-exception';
 // This should be a real class/interface representing a user entity
 export type User = any;
 
@@ -37,9 +36,7 @@ export class UsersService {
 
   async findOneByName(name: string): Promise<User | undefined> {
     const user = await this.userModel.findOne({ name }).exec();
-    if (!user) {
-      throw new CustomException('Utilizatorul nu exista!', 401);
-    }
+
     return user;
   }
 }

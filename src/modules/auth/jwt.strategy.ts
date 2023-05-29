@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, ExtractJwt } from 'passport-jwt';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AuthService } from './auth.service';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs-extra');
@@ -16,6 +16,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    return { userId: payload.sub, username: payload.username };
+    const result = await this.authService.validateUser(
+      payload.username,
+      payload.password,
+    );
+    const { _id: userId, name: username } = result._doc;
+    return { userId: userId.toString(), username };
   }
 }

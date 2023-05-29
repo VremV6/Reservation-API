@@ -8,7 +8,7 @@ import { User, UsersService } from '../user/user.service';
 import { AuthDto } from './dto/auth.dto';
 import { UserDto } from '../user/dto/user.dto';
 import * as bcrypt from 'bcrypt';
-import { CustomException } from '../../common/exceptions/custom-exception';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -20,13 +20,20 @@ export class AuthService {
     const { name, password } = authDto;
 
     const user = await this.usersService.findOneByName(name);
+    if (!user) {
+      throw new UnauthorizedException('Utilizatorul nu exista!');
+    }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Credentiale Invalide!');
     }
 
-    const payload = { username: user.name, sub: user.userId };
+    const payload = {
+      username: user.name,
+      userId: user.id,
+      password: user.password,
+    };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
@@ -43,9 +50,22 @@ export class AuthService {
     const createdUser = await this.usersService.createUser(userDto);
 
     // Generate the access token
-    const payload = { username: createdUser.username, sub: createdUser.userId };
+    const payload = {
+      password: createdUser.password,
+      username: createdUser.username,
+      userId: createdUser.userId,
+    };
     const accessToken = await this.jwtService.signAsync(payload);
 
     return { access_token: accessToken };
+  }
+
+  async validateUser(username: string, pass: string): Promise<any> {
+    const user = await this.usersService.findOneByName(username);
+    if (user && user.password === pass) {
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
   }
 }

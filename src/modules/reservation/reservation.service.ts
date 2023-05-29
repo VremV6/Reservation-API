@@ -1,5 +1,5 @@
-import { Model } from 'mongoose';
-import { Injectable, Inject } from '@nestjs/common';
+import mongoose, { Model } from 'mongoose';
+import { Inject, Injectable } from '@nestjs/common';
 import { Reservation } from './interfaces/reservation.interface';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { Constants } from '../../common/constants';
@@ -22,7 +22,30 @@ export class ReservationService {
     return createdReservation.save();
   }
 
-  async findAll(): Promise<Reservation[]> {
-    return this.reservationModel.find().exec();
+  async findAllForCompanies(companyId: string): Promise<Reservation[]> {
+    const query: any = { companyId: new mongoose.Types.ObjectId(companyId) };
+    return await this.reservationModel.find(query).exec();
+  }
+
+  async findAllForClients(companyId: string): Promise<Reservation[]> {
+    const query: any = { companyId: new mongoose.Types.ObjectId(companyId) };
+    // select only the fields we want
+    return await this.reservationModel
+      .find(query)
+      .select('_id start_date companyId')
+      .exec();
+  }
+
+  async findById(id: string, companyId: string): Promise<Reservation> {
+    return this.reservationModel.findOne({
+      _id: new mongoose.Types.ObjectId(id),
+      companyId: new mongoose.Types.ObjectId(companyId),
+    });
+  }
+
+  async delete(id: string): Promise<Reservation> {
+    return this.reservationModel.findOneAndDelete({
+      _id: new mongoose.Types.ObjectId(id),
+    });
   }
 }
