@@ -14,20 +14,3 @@ export const ReservationSchema = new mongoose.Schema({
     required: true,
   },
 });
-
-// export interface SystemConfig {
-//   selectDateMessage: string;
-//   dateFilters: DateFilters;
-//   hours: BusinessHours;
-//   minDate: Date;
-//   maxDate: Date;
-// } // RU
-// export const DateFilters: {
-//   filterWeekends: boolean;
-//   filterSpecificDates: [Date];
-//   filterSpecificDatesEveryYear: [Date];
-// };
-//
-// export const BusinessHours: {
-//   date: [[Date]];
-// };

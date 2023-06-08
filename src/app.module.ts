@@ -4,8 +4,10 @@ import { AppService } from './app.service';
 import { ReservationModule } from './modules/reservation/reservation.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { MailModule } from './common/mailer/mail.module';
+import { SystemModule } from './modules/system/system.module';
+
 @Module({
-  imports: [ReservationModule, AuthModule, MailModule],
+  imports: [ReservationModule, AuthModule, MailModule, SystemModule],
   controllers: [AppController],
   providers: [AppService],
 })

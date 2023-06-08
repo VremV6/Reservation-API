@@ -1,12 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { MailService } from './mailer.service';
 
 @Controller('mailer')
 export class MailerController {
-  constructor(private readonly mailService: MailService) {}
+  private logger = new Logger(MailerController.name);
 
-  @Get()
-  getHello(): void {
-    return this.mailService.sendEmail();
-  }
+  constructor(private readonly mailService: MailService) {}
 }

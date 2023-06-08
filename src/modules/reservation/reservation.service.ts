@@ -16,7 +16,8 @@ export class ReservationService {
     createReservationDto: CreateReservationDto,
   ): Promise<Reservation> {
     const createdReservation = new this.reservationModel(createReservationDto);
-    if (!createdReservation.name) {
+    const start_date = createdReservation.get('start_date');
+    if (!start_date) {
       throw new CustomException('Rezervarea nu a putut fi facuta!', 400);
     }
     return createdReservation.save();
@@ -37,10 +38,12 @@ export class ReservationService {
   }
 
   async findById(id: string, companyId: string): Promise<Reservation> {
-    return this.reservationModel.findOne({
-      _id: new mongoose.Types.ObjectId(id),
-      companyId: new mongoose.Types.ObjectId(companyId),
-    });
+    return await this.reservationModel
+      .findOne({
+        _id: new mongoose.Types.ObjectId(id),
+        companyId: new mongoose.Types.ObjectId(companyId),
+      })
+      .exec();
   }
 
   async delete(id: string): Promise<Reservation> {

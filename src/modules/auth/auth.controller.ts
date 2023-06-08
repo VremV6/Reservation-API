@@ -21,7 +21,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() signInDto: AuthDto): Promise<User> {
+  async signIn(@Body() signInDto: AuthDto): Promise<User> {
     this.logger.verbose(
       `Received login request for username: ${signInDto.name}`,
     );

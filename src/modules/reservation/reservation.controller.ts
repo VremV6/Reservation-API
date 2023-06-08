@@ -1,10 +1,9 @@
 import {
   Body,
   Controller,
-  createParamDecorator,
   Delete,
-  ExecutionContext,
   Get,
+  Logger,
   Param,
   Post,
   UseGuards,
@@ -14,27 +13,42 @@ import { ReservationService } from './reservation.service';
 import { Reservation } from './interfaces/reservation.interface';
 import { CustomException } from '../../common/exceptions/custom-exception';
 import { AuthGuard } from '@nestjs/passport';
-
-export interface User {
-  userId: string;
-  username: string;
-}
-export const GetUser = createParamDecorator(
-  (data, ctx: ExecutionContext): User => {
-    const req = ctx.switchToHttp().getRequest();
-
-    return req.user;
-  },
-);
+import { GetUser, User } from '../../common/auth-helper';
+import { UsersService } from '../user/user.service';
+import { Mail } from '../../common/mailer/interfaces/mail.interface';
+import { MailService } from '../../common/mailer/mailer.service';
 
 @Controller('reservations')
 export class ReservationsController {
-  constructor(private readonly reservationsService: ReservationService) {}
+  private logger = new Logger(ReservationsController.name);
+
+  constructor(
+    private readonly reservationsService: ReservationService,
+    private readonly usersService: UsersService,
+    private readonly mailService: MailService,
+  ) {}
 
   @Post()
   async create(@Body() createReservationDto: CreateReservationDto) {
     try {
-      return await this.reservationsService.create(createReservationDto);
+      this.logger.verbose('Creating a new reservation!');
+      const reservation = await this.reservationsService.create(
+        createReservationDto,
+      );
+
+      const company = await this.usersService.findOneById(
+        reservation.companyId,
+      );
+      const emailObject: Mail = {
+        start_date: reservation.start_date,
+        title: reservation.title,
+        company: company.name,
+        clientEmail: reservation.email,
+      };
+      this.logger.verbose(`Email service was used!`);
+      await this.mailService.sendEmail(emailObject);
+
+      return reservation;
     } catch (error) {
       throw new CustomException(
         'Rezervarea nu a putut fi facuta!',
@@ -47,6 +61,7 @@ export class ReservationsController {
   @UseGuards(AuthGuard('jwt'))
   async findAllForCompany(@GetUser() user: User): Promise<Reservation[]> {
     try {
+      this.logger.verbose('Getting all reservations for company!');
       return this.reservationsService.findAllForCompanies(user.userId);
     } catch (error) {
       throw new CustomException(
@@ -58,6 +73,7 @@ export class ReservationsController {
   @Get('/clients/:id')
   async findAllForClients(@Param('id') id: string): Promise<Reservation[]> {
     try {
+      this.logger.verbose('Getting all reservations for clients!');
       return this.reservationsService.findAllForClients(id);
     } catch (error) {
       throw new CustomException(
@@ -74,9 +90,10 @@ export class ReservationsController {
     @GetUser() user: User,
   ): Promise<Reservation> {
     try {
+      this.logger.verbose('Getting reservation by id!');
       const userId: string = user.userId;
       const reservation = await this.reservationsService.findById(id, userId);
-      const companyId = reservation.get('companyId');
+      const companyId = reservation.companyId;
       if (userId !== companyId.toString()) {
         return;
       }
@@ -89,7 +106,8 @@ export class ReservationsController {
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<Reservation> {
     try {
-      return this.reservationsService.delete(id);
+      this.logger.verbose('Deleting reservation by id!');
+      return await this.reservationsService.delete(id);
     } catch (error) {
       throw new CustomException(
         'Nu s-a putut sterge rezervarea!',
