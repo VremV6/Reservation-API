@@ -1,9 +1,18 @@
-import { Controller, Get, Logger, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Logger,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { SystemService } from './system.service';
 import { AuthGuard } from '@nestjs/passport';
 import { System } from './interfaces/system.interface';
 import { GetUser, User } from '../../common/auth-helper';
 import { CustomException } from '../../common/exceptions/custom-exception';
+import { CreateSystemDto } from './dto/create-system.dto';
 
 @Controller('system')
 export class SystemController {
@@ -24,10 +33,13 @@ export class SystemController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
-  async updateSystem(@GetUser() user: User): Promise<System> {
+  async updateSystem(
+    @GetUser() user: User,
+    @Body() createSystemDto: CreateSystemDto,
+  ): Promise<System> {
     try {
       this.logger.verbose('Updating system data!');
-      return this.systemService.updateSystem(user.userId);
+      return this.systemService.updateSystem(user.userId, createSystemDto);
     } catch (error) {
       throw new CustomException('Nu s-au putut gasi datele sistemului!', 400);
     }

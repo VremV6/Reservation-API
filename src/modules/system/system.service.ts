@@ -16,7 +16,11 @@ export class SystemService {
     return await this.systemModel.findOne(query).exec();
   }
 
-  async updateSystem(companyId: string): Promise<System> {
+  async updateSystem(
+    companyId: string,
+    createSystemDto: CreateSystemDto,
+  ): Promise<System> {
+    console.log(createSystemDto);
     const query: any = { companyId: new mongoose.Types.ObjectId(companyId) };
     return await this.systemModel
       .findOneAndUpdate(

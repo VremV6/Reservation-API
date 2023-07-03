@@ -13,7 +13,7 @@ export class UsersService {
     private userModel: Model<User>,
   ) {}
   async createUser(userDto: UserDto): Promise<User> {
-    const { name, password, email, role } = userDto;
+    const { name, password, email, role, subscription } = userDto;
     // Hash the password using bcrypt
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -23,6 +23,7 @@ export class UsersService {
       email,
       password: hashedPassword,
       role,
+      subscription,
       created_at: new Date(),
       updated_at: new Date(),
     });

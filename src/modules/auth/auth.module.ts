@@ -5,6 +5,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserModule } from '../user/user.module';
+import { MicroserviceClient } from '../../microservice/microserviceClient.service';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs-extra');
 const config = fs.readJsonSync('./src/config/config.json');
@@ -20,7 +21,7 @@ const passportModule = PassportModule.register({ defaultStrategy: 'jwt' });
     }),
     UserModule,
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, MicroserviceClient],
   controllers: [AuthController],
   exports: [PassportModule, JwtModule],
 })

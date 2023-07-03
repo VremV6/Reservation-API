@@ -13,4 +13,7 @@ export class UserDto {
   @IsString()
   @IsNotEmpty()
   readonly role: string;
+  @IsString()
+  @IsNotEmpty()
+  readonly subscription: string;
 }

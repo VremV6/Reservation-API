@@ -8,12 +8,14 @@ import { User, UsersService } from '../user/user.service';
 import { AuthDto } from './dto/auth.dto';
 import { UserDto } from '../user/dto/user.dto';
 import * as bcrypt from 'bcrypt';
+import { MicroserviceClient } from '../../microservice/microserviceClient.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private usersService: UsersService,
+    private microServiceClient: MicroserviceClient,
   ) {}
 
   async signIn(authDto: AuthDto): Promise<any> {
@@ -45,19 +47,24 @@ export class AuthService {
     if (existingUser) {
       throw new ConflictException('Utilizatorul exista deja!');
     }
+    const plan = {
+      name: userDto.subscription,
+    };
+    const payment = await this.microServiceClient.sendRequest(plan);
 
     // Create the user
     const createdUser = await this.usersService.createUser(userDto);
-
+    console.log(createdUser);
     // Generate the access token
     const payload = {
       password: createdUser.password,
       username: createdUser.username,
       userId: createdUser.userId,
+      subscription: createdUser.subscription,
     };
     const accessToken = await this.jwtService.signAsync(payload);
 
-    return { access_token: accessToken };
+    return { access_token: accessToken, stripe: payment };
   }
 
   async validateUser(username: string, pass: string): Promise<any> {
