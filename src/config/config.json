@@ -1,6 +1,6 @@
 {
   "mongodb": {
-    "uri": "mongodb://localhost",
+    "uri": "mongodb+srv://skls:D7b9asDR@cluster0.1sr9j.mongodb.net/27017?retryWrites=true&w=majority",
     "dbName": "Reservation",
     "port": 27017
   },
