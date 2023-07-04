@@ -70,6 +70,19 @@ export class ReservationsController {
       );
     }
   }
+  @Get('/today')
+  @UseGuards(AuthGuard('jwt'))
+  async findAllTodayForCompany(@GetUser() user: User): Promise<Reservation[]> {
+    try {
+      this.logger.verbose('Getting all reservations made today for company!');
+      return this.reservationsService.findAllTodayForCompanies(user.userId);
+    } catch (error) {
+      throw new CustomException(
+        'Nu s-au putut gasi rezervarile!',
+        error.status,
+      );
+    }
+  }
   @Get('/clients/:id')
   async findAllForClients(@Param('id') id: string): Promise<Reservation[]> {
     try {

@@ -28,6 +28,16 @@ export class ReservationService {
     return await this.reservationModel.find(query).exec();
   }
 
+  async findAllTodayForCompanies(companyId: string): Promise<Reservation[]> {
+    const query: any = { companyId: new mongoose.Types.ObjectId(companyId) };
+    // find all reservations for today
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    query.start_date = { $gte: today, $lt: tomorrow };
+    return await this.reservationModel.find(query).exec();
+  }
+
   async findAllForClients(companyId: string): Promise<Reservation[]> {
     const query: any = { companyId: new mongoose.Types.ObjectId(companyId) };
     // select only the fields we want
