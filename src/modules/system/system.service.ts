@@ -21,9 +21,10 @@ export class SystemService {
     createSystemDto: CreateSystemDto,
   ): Promise<System> {
     const system = await this.findSystem(companyId);
-    if (system.hours.length <= 1) {
+    if (this.checkHours(system, createSystemDto)) {
       createSystemDto.hours = await this.matchingTimeSlots(createSystemDto);
     }
+
     const query: any = { companyId: new mongoose.Types.ObjectId(companyId) };
     return await this.systemModel
       .findOneAndUpdate(query, createSystemDto, { new: true })
@@ -153,5 +154,35 @@ export class SystemService {
         specificDate.getDate() === date.getDate()
       );
     });
+  }
+
+  checkIfShouldGenerate(system, updateSystemDto: CreateSystemDto): boolean {
+    if (!updateSystemDto.bookingDuration && !system.bookingDuration) {
+      return false;
+    }
+    if (!updateSystemDto.openingHour && !system.openingHour) {
+      return false;
+    }
+    if (!updateSystemDto.closingHour && !system.closingHour) {
+      return false;
+    }
+    if (
+      (updateSystemDto.dateFilters?.filterWeekends === false ||
+        system.dateFilters?.filterWeekends === false) &&
+      !updateSystemDto.weekendOpeningHour &&
+      !system.weekendOpeningHour &&
+      !updateSystemDto.weekendClosingHour &&
+      !system.weekendClosingHour
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  checkHours(system, updateSystemDto: CreateSystemDto): boolean {
+    return (
+      this.checkIfShouldGenerate(system, updateSystemDto) &&
+      system.hours.length <= 1
+    );
   }
 }
