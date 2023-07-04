@@ -28,21 +28,26 @@ export class ReservationService {
     return await this.reservationModel.find(query).exec();
   }
 
-  async findAllTodayForCompanies(companyId: string): Promise<Reservation[]> {
-    const query: any = { companyId: new mongoose.Types.ObjectId(companyId) };
-    // Get the current date
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth();
-    const currentDay = currentDate.getDate();
+  async findAllByDateForCompanies(
+    companyId: string,
+    date: Date,
+  ): Promise<Reservation[]> {
+    // Set the start and end of the selected date
+    const startOfDay = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+    );
+    const endOfDay = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate() + 1,
+    );
 
-    // Set the start date to the beginning of the current day
-    const startDate = new Date(currentYear, currentMonth, currentDay);
-    // Set the end date to the beginning of the next day
-    const endDate = new Date(currentYear, currentMonth, currentDay + 1);
-
-    // Set the query to match reservations between the start and end dates
-    query.start_date = { $gte: startDate, $lt: endDate };
+    // Build the query to retrieve reservations within the selected date range
+    const query = {
+      start_date: { $gte: startOfDay, $lt: endOfDay },
+    };
 
     return await this.reservationModel.find(query).exec();
   }

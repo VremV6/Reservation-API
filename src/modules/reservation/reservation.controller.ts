@@ -70,12 +70,20 @@ export class ReservationsController {
       );
     }
   }
-  @Get('/today')
+  @Get('/by-date')
   @UseGuards(AuthGuard('jwt'))
-  async findAllTodayForCompany(@GetUser() user: User): Promise<Reservation[]> {
+  async findAllTodayForCompany(
+    @GetUser() user: User,
+    @Body('date') date: string,
+  ): Promise<Reservation[]> {
     try {
       this.logger.verbose('Getting all reservations made today for company!');
-      return this.reservationsService.findAllTodayForCompanies(user.userId);
+      // Convert the date string to a JavaScript Date object
+      const selectedDate = new Date(date);
+      return this.reservationsService.findAllByDateForCompanies(
+        user.userId,
+        selectedDate,
+      );
     } catch (error) {
       throw new CustomException(
         'Nu s-au putut gasi rezervarile!',
