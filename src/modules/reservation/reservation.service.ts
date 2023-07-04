@@ -30,11 +30,20 @@ export class ReservationService {
 
   async findAllTodayForCompanies(companyId: string): Promise<Reservation[]> {
     const query: any = { companyId: new mongoose.Types.ObjectId(companyId) };
-    // find all reservations for today
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    query.start_date = { $gte: today, $lt: tomorrow };
+    // Get the current date
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+    const currentDay = currentDate.getDate();
+
+    // Set the start date to the beginning of the current day
+    const startDate = new Date(currentYear, currentMonth, currentDay);
+    // Set the end date to the beginning of the next day
+    const endDate = new Date(currentYear, currentMonth, currentDay + 1);
+
+    // Set the query to match reservations between the start and end dates
+    query.start_date = { $gte: startDate, $lt: endDate };
+
     return await this.reservationModel.find(query).exec();
   }
 
