@@ -74,7 +74,7 @@ export class ReservationsController {
   @UseGuards(AuthGuard('jwt'))
   async findAllTodayForCompany(
     @GetUser() user: User,
-    @Body('date') date: string,
+    @Body('date') date: Date,
   ): Promise<Reservation[]> {
     try {
       this.logger.verbose('Getting all reservations made today for company!');
