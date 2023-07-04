@@ -70,7 +70,7 @@ export class ReservationsController {
       );
     }
   }
-  @Get('/by-date')
+  @Post('/by-date')
   @UseGuards(AuthGuard('jwt'))
   async findAllTodayForCompany(
     @GetUser() user: User,
