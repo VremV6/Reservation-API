@@ -12,8 +12,8 @@ export class MailService {
       to: emailObject.clientEmail,
       from: Constants.EMAIL,
       subject: 'Rezervare creata ✔',
-      text: `Acest mail v-a fost trimis pentru a va instiinta ca ati rezervat un loc pentru ${emailObject.title} incepand cu ora ${emailObject.start_date} la ${emailObject.company}`,
-      html: `<b>Acest mail v-a fost trimis pentru a va instiinta ca ati rezervat un loc pentru ${emailObject.title} incepand cu ora ${emailObject.start_date} la ${emailObject.company}</b>`,
+      text: `Acest mail v-a fost trimis pentru a va instiinta ca ati rezervat un loc pentru ${emailObject.title} incepand cu ora ${emailObject.start_date} la ${emailObject.company}. Pentru a anula rezervarea apasati aici: http://localhost:4200/cancel-reservation?id=${emailObject.id}`,
+      html: `<b>Acest mail v-a fost trimis pentru a va instiinta ca ati rezervat un loc pentru ${emailObject.title} incepand cu ora ${emailObject.start_date} la ${emailObject.company}. Pentru a anula rezervarea apasati aici: http://localhost:4200/cancel-reservation?id=${emailObject.id}</b>`,
     });
   }
 }

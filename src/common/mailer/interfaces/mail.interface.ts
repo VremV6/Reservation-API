@@ -3,4 +3,5 @@ export interface Mail {
   readonly title: string;
   readonly company: string;
   readonly clientEmail: string;
+  readonly id: string;
 }
