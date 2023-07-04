@@ -44,6 +44,7 @@ export class ReservationsController {
         title: reservation.title,
         company: company.name,
         clientEmail: reservation.email,
+        id: reservation.id,
       };
       this.logger.verbose(`Email service was used!`);
       await this.mailService.sendEmail(emailObject);
@@ -92,10 +93,10 @@ export class ReservationsController {
     }
   }
   @Get('/clients/:id')
-  async findAllForClients(@Param('id') id: string): Promise<Reservation[]> {
+  async findOneForClients(@Param('id') id: string): Promise<Reservation> {
     try {
       this.logger.verbose('Getting all reservations for clients!');
-      return this.reservationsService.findAllForClients(id);
+      return this.reservationsService.findOneForClients(id);
     } catch (error) {
       throw new CustomException(
         'Nu s-au putut gasi rezervarile!',

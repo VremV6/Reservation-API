@@ -52,13 +52,10 @@ export class ReservationService {
     return await this.reservationModel.find(query).exec();
   }
 
-  async findAllForClients(companyId: string): Promise<Reservation[]> {
-    const query: any = { companyId: new mongoose.Types.ObjectId(companyId) };
+  async findOneForClients(reservationId: string): Promise<Reservation> {
+    const query: any = { _id: new mongoose.Types.ObjectId(reservationId) };
     // select only the fields we want
-    return await this.reservationModel
-      .find(query)
-      .select('_id start_date companyId')
-      .exec();
+    return await this.reservationModel.findOne(query).exec();
   }
 
   async findById(id: string, companyId: string): Promise<Reservation> {
