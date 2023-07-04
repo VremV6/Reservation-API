@@ -24,4 +24,7 @@ export class CreateReservationDto {
   @IsString()
   @IsNotEmpty()
   readonly title: string;
+  @IsString()
+  @IsNotEmpty()
+  readonly service: string;
 }

@@ -7,4 +7,5 @@ export interface Reservation extends Document {
   readonly phone: string;
   readonly email: string;
   readonly companyId: string;
+  readonly service: string;
 }

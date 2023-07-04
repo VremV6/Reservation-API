@@ -8,6 +8,7 @@ export const ReservationSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   email: { type: String, required: true },
   name: { type: String, required: false },
+  service: { type: String, required: true },
   companyId: {
     type: Types.ObjectId,
     ref: model('User', UserSchema),
