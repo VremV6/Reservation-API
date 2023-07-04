@@ -20,19 +20,14 @@ export class SystemService {
     companyId: string,
     createSystemDto: CreateSystemDto,
   ): Promise<System> {
-    console.log(createSystemDto);
     const query: any = { companyId: new mongoose.Types.ObjectId(companyId) };
     return await this.systemModel
-      .findOneAndUpdate(
-        query,
-        { $set: { lastUpdate: new Date() } },
-        { new: true },
-      )
+      .findOneAndUpdate(query, createSystemDto, { new: true })
       .exec();
   }
 
   async createSystem(companyId: string): Promise<System> {
-    const createSystemDto: CreateSystemDto = {
+    const createSystemDto: { companyId: string } = {
       companyId: companyId,
     };
     const createdDefaultSystem = new this.systemModel(createSystemDto);
