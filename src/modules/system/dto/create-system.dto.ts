@@ -9,7 +9,10 @@ export class CreateSystemDto {
     filterSpecificDates: [Date];
     filterSpecificDatesEveryYear: [Date];
   };
-  readonly hours: [[Date]];
-  readonly minDate: Date;
-  readonly maxDate: Date;
+  hours: string[][];
+  readonly openingHour: string;
+  readonly closingHour: string;
+  readonly weekendOpeningHour: string;
+  readonly weekendClosingHour: string;
+  readonly bookingDuration: number;
 }

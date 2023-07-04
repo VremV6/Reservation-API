@@ -9,8 +9,11 @@ export interface System extends Document {
     filterSpecificDatesEveryYear: [Date];
   };
   readonly hours: [[Date]];
-  readonly minDate: Date;
-  readonly maxDate: Date;
+  readonly openingHour: string;
+  readonly closingHour: string;
+  readonly weekendOpeningHour: string;
+  readonly weekendClosingHour: string;
+  readonly bookingDuration: number;
   readonly companyId: string;
 }
 
@@ -38,5 +41,5 @@ export enum AcceptedCurrencies {
 }
 
 export interface BusinessHours {
-  hours: Date[][];
+  hours: string[][];
 }
