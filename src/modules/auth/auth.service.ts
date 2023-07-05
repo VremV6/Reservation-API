@@ -54,7 +54,7 @@ export class AuthService {
 
     // Create the user
     const createdUser = await this.usersService.createUser(userDto);
-    console.log(createdUser);
+
     // Generate the access token
     const payload = {
       password: createdUser.password,
