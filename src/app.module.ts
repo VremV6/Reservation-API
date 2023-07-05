@@ -6,6 +6,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { MailModule } from './common/mailer/mail.module';
 import { SystemModule } from './modules/system/system.module';
 import { MicroserviceModule } from './microservice/microservice.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -14,6 +15,10 @@ import { MicroserviceModule } from './microservice/microservice.module';
     MailModule,
     SystemModule,
     MicroserviceModule,
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
