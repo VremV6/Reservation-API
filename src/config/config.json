@@ -5,7 +5,7 @@
     "port": 27017
   },
   "jwt": {
-    "secret": "sEcReToSiImAtTii",
+    "secret": "sEcReToSiDisKrEtO",
     "expiresIn": "1d"
   },
   "mail": {

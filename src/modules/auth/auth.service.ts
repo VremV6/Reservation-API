@@ -58,7 +58,7 @@ export class AuthService {
     // Generate the access token
     const payload = {
       password: createdUser.password,
-      username: createdUser.username,
+      username: createdUser.name,
       userId: createdUser.userId,
       subscription: createdUser.subscription,
     };
