@@ -21,7 +21,7 @@ export class SystemService {
     createSystemDto: CreateSystemDto,
   ): Promise<System> {
     const system = await this.findSystem(companyId);
-    if (this.checkHours(system, createSystemDto)) {
+    if (this.checkIfShouldGenerate(system, createSystemDto)) {
       createSystemDto.hours = await this.matchingTimeSlots(createSystemDto);
     }
 
@@ -177,12 +177,5 @@ export class SystemService {
       return false;
     }
     return true;
-  }
-
-  checkHours(system, updateSystemDto: CreateSystemDto): boolean {
-    return (
-      this.checkIfShouldGenerate(system, updateSystemDto) &&
-      system.hours.length <= 1
-    );
   }
 }
